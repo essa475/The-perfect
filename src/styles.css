@@ -1,0 +1,550 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: oklch(0.208 0.042 265.755);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
+}
+
+.dark {
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+@keyframes ripple {
+  0%   { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%  { transform: translateX(-6px); }
+  30%  { transform: translateX(6px); }
+  45%  { transform: translateX(-4px); }
+  60%  { transform: translateX(4px); }
+  75%  { transform: translateX(-2px); }
+  90%  { transform: translateX(2px); }
+}
+
+/* Tab slide transitions */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Card stagger entrance */
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Top loading bar */
+@keyframes loadBar {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Glow pulse */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+  50%       { box-shadow: 0 0 16px 4px rgba(245,158,11,0.18); }
+}
+
+/* Number update flash */
+@keyframes numFlash {
+  0%   { color: #fbbf24; }
+  100% { color: inherit; }
+}
+
+/* Floating orb drift */
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 15px) scale(0.96); }
+}
+
+/* Live dot blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+.slide-right  { animation: slideInRight 0.28s cubic-bezier(.22,.68,0,1.2) both; }
+.slide-left   { animation: slideInLeft  0.28s cubic-bezier(.22,.68,0,1.2) both; }
+.card-in      { animation: cardIn 0.35s ease both; }
+.num-flash    { animation: numFlash 0.6s ease; }
+.glow-pulse   { animation: glowPulse 2s ease-in-out infinite; }
+.live-dot     { animation: blink 1.8s ease-in-out infinite; }
+
+/* ─── Dev Options: selectable tab-switch animations ────────────────────── */
+@keyframes animSlideInRight { from { opacity: 0; transform: translateX(var(--app-anim-distance, 36px)); } to { opacity: 1; transform: translateX(0); } }
+@keyframes animSlideInLeft  { from { opacity: 0; transform: translateX(calc(-1 * var(--app-anim-distance, 36px))); } to { opacity: 1; transform: translateX(0); } }
+@keyframes animFadeIn       { from { opacity: 0; } to { opacity: 1; } }
+@keyframes animZoomIn       { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes animFlipInRight  { from { opacity: 0; transform: perspective(800px) rotateY(-70deg); } to { opacity: 1; transform: perspective(800px) rotateY(0deg); } }
+@keyframes animFlipInLeft   { from { opacity: 0; transform: perspective(800px) rotateY(70deg); } to { opacity: 1; transform: perspective(800px) rotateY(0deg); } }
+@keyframes animSlideUpIn    { from { opacity: 0; transform: translateY(var(--app-anim-distance, 36px)); } to { opacity: 1; transform: translateY(0); } }
+@keyframes animBlurIn       { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+@keyframes animBounceIn     { 0% { opacity: 0; transform: scale(0.82); } 60% { opacity: 1; transform: scale(1.035); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes animRotateIn     { from { opacity: 0; transform: rotate(-6deg) scale(0.94); } to { opacity: 1; transform: rotate(0) scale(1); } }
+
+.anim-slide-right { animation: animSlideInRight var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-slide-left  { animation: animSlideInLeft  var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-fade        { animation: animFadeIn   var(--app-transition, 280ms) ease both; }
+.anim-zoom        { animation: animZoomIn   var(--app-transition, 280ms) ease both; }
+.anim-flip-right  { animation: animFlipInRight var(--app-transition, 280ms) ease both; }
+.anim-flip-left   { animation: animFlipInLeft  var(--app-transition, 280ms) ease both; }
+.anim-slide-up    { animation: animSlideUpIn var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-blur        { animation: animBlurIn   var(--app-transition, 280ms) ease both; }
+.anim-bounce      { animation: animBounceIn var(--app-transition, 280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-rotate      { animation: animRotateIn var(--app-transition, 280ms) ease both; }
+
+/* ─── Dev Options: combination animations (each mixes two base motions) ── */
+@keyframes animSlideFlipRight { from { opacity: 0; transform: perspective(900px) translateX(var(--app-anim-distance, 36px)) rotateY(-50deg); } to { opacity: 1; transform: perspective(900px) translateX(0) rotateY(0); } }
+@keyframes animSlideFlipLeft  { from { opacity: 0; transform: perspective(900px) translateX(calc(-1 * var(--app-anim-distance, 36px))) rotateY(50deg); } to { opacity: 1; transform: perspective(900px) translateX(0) rotateY(0); } }
+@keyframes animZoomFlip       { from { opacity: 0; transform: perspective(900px) scale(0.9) rotateY(30deg); } to { opacity: 1; transform: perspective(900px) scale(1) rotateY(0); } }
+@keyframes animFlipBounce     { 0% { opacity: 0; transform: perspective(900px) rotateY(45deg) scale(0.9); } 60% { opacity: 1; transform: perspective(900px) rotateY(-6deg) scale(1.02); } 100% { opacity: 1; transform: perspective(900px) rotateY(0) scale(1); } }
+@keyframes animSlideBlurRight { from { opacity: 0; filter: blur(8px); transform: translateX(var(--app-anim-distance, 36px)); } to { opacity: 1; filter: blur(0); transform: translateX(0); } }
+@keyframes animSlideBlurLeft  { from { opacity: 0; filter: blur(8px); transform: translateX(calc(-1 * var(--app-anim-distance, 36px))); } to { opacity: 1; filter: blur(0); transform: translateX(0); } }
+@keyframes animZoomRotate     { from { opacity: 0; transform: scale(0.85) rotate(-10deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes animBounceBlur     { 0% { opacity: 0; filter: blur(6px); transform: scale(0.85); } 60% { opacity: 1; filter: blur(0); transform: scale(1.03); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes animRotateFade     { from { opacity: 0; transform: rotate(-14deg) scale(0.9); } to { opacity: 1; transform: rotate(0) scale(1); } }
+@keyframes animSlideZoomRight { from { opacity: 0; transform: translateX(var(--app-anim-distance, 36px)) scale(0.92); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes animSlideZoomLeft  { from { opacity: 0; transform: translateX(calc(-1 * var(--app-anim-distance, 36px))) scale(0.92); } to { opacity: 1; transform: translateX(0) scale(1); } }
+
+.anim-slide-flip-right { animation: animSlideFlipRight var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-slide-flip-left  { animation: animSlideFlipLeft  var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-zoom-flip         { animation: animZoomFlip   var(--app-transition, 280ms) ease both; }
+.anim-flip-bounce       { animation: animFlipBounce var(--app-transition, 280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-slide-blur-right  { animation: animSlideBlurRight var(--app-transition, 280ms) ease both; }
+.anim-slide-blur-left   { animation: animSlideBlurLeft  var(--app-transition, 280ms) ease both; }
+.anim-zoom-rotate       { animation: animZoomRotate var(--app-transition, 280ms) ease both; }
+.anim-bounce-blur       { animation: animBounceBlur var(--app-transition, 280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-rotate-fade       { animation: animRotateFade var(--app-transition, 280ms) ease both; }
+.anim-slide-zoom-right  { animation: animSlideZoomRight var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-slide-zoom-left   { animation: animSlideZoomLeft  var(--app-transition, 280ms) cubic-bezier(.22,.68,0,1.2) both; }
+
+/* ─── Extra named animations (30-animation set) ───────────────────────────── */
+/* zoom-bounce */
+@keyframes animZoomBounce { 0% { opacity:0; transform:scale(0.82); } 65% { opacity:1; transform:scale(1.04); } 100% { opacity:1; transform:scale(1); } }
+/* zoom-blur */
+@keyframes animZoomBlur   { from { opacity:0; filter:blur(8px); transform:scale(0.9); } to { opacity:1; filter:blur(0); transform:scale(1); } }
+/* flip-rotate */
+@keyframes animFlipRotate { from { opacity:0; transform:perspective(900px) rotateY(45deg) rotate(-8deg) scale(0.9); } to { opacity:1; transform:perspective(900px) rotateY(0) rotate(0) scale(1); } }
+/* glide — directional elastic */
+@keyframes animGlideRight { from { opacity:0; transform:translateX(var(--app-anim-distance,36px)) scaleX(0.92); } to { opacity:1; transform:translateX(0) scaleX(1); } }
+@keyframes animGlideLeft  { from { opacity:0; transform:translateX(calc(-1 * var(--app-anim-distance,36px))) scaleX(0.92); } to { opacity:1; transform:translateX(0) scaleX(1); } }
+/* drop — falls from above */
+@keyframes animDropIn     { from { opacity:0; transform:translateY(calc(-1 * var(--app-anim-distance,36px))); } 65% { opacity:1; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+/* swing — hinge from top */
+@keyframes animSwingIn    { 0% { opacity:0; transform:perspective(900px) rotateX(-60deg); transform-origin:top; } 70% { opacity:1; transform:perspective(900px) rotateX(8deg); } 100% { opacity:1; transform:perspective(900px) rotateX(0); } }
+/* rubber — elastic both ways */
+@keyframes animRubber     { 0% { opacity:0; transform:scale(0.6); } 50% { opacity:1; transform:scale(1.12); } 70% { transform:scale(0.94); } 85% { transform:scale(1.04); } 100% { opacity:1; transform:scale(1); } }
+/* pop — sharp quick pop */
+@keyframes animPop        { 0% { opacity:0; transform:scale(0.7); } 40% { opacity:1; transform:scale(1.08); } 70% { transform:scale(0.97); } 100% { opacity:1; transform:scale(1); } }
+/* morph — scale + rotate + blur triple */
+@keyframes animMorph      { from { opacity:0; filter:blur(12px); transform:scale(0.8) rotate(12deg); } to { opacity:1; filter:blur(0); transform:scale(1) rotate(0); } }
+/* drift-in — diagonal from bottom-right */
+@keyframes animDriftIn    { from { opacity:0; transform:translate(calc(var(--app-anim-distance,36px)*0.6), calc(var(--app-anim-distance,36px)*0.6)); } to { opacity:1; transform:translate(0,0); } }
+/* rise — float up + unblur */
+@keyframes animRise       { from { opacity:0; filter:blur(6px); transform:translateY(calc(var(--app-anim-distance,36px)*0.5)); } to { opacity:1; filter:blur(0); transform:translateY(0); } }
+/* unfold — scale from flat */
+@keyframes animUnfold     { from { opacity:0; transform:scaleY(0.2) scaleX(0.95); } 60% { opacity:1; transform:scaleY(1.04) scaleX(0.98); } to { opacity:1; transform:scaleY(1) scaleX(1); } }
+/* shutter — camera rotateX flip */
+@keyframes animShutter    { from { opacity:0; transform:perspective(900px) rotateX(70deg); } 70% { opacity:1; transform:perspective(900px) rotateX(-6deg); } to { opacity:1; transform:perspective(900px) rotateX(0); } }
+/* mega combo — fade + slide + rotate + flip + bounce all at once */
+@keyframes animMega       { 0% { opacity:0; filter:blur(6px); transform:perspective(900px) translateX(var(--app-anim-distance,36px)) rotateY(-30deg) rotate(-8deg) scale(0.75); } 55% { opacity:1; filter:blur(0); transform:perspective(900px) translateX(-4px) rotateY(4deg) rotate(1deg) scale(1.04); } 80% { transform:perspective(900px) translateX(2px) rotateY(-2deg) rotate(-0.5deg) scale(0.98); } 100% { opacity:1; filter:blur(0); transform:perspective(900px) translateX(0) rotateY(0) rotate(0) scale(1); } }
+
+.anim-zoom-bounce   { animation: animZoomBounce var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-zoom-blur     { animation: animZoomBlur   var(--app-transition,280ms) ease both; }
+.anim-flip-rotate   { animation: animFlipRotate var(--app-transition,280ms) ease both; }
+.anim-glide-right   { animation: animGlideRight var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-glide-left    { animation: animGlideLeft  var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-drop          { animation: animDropIn     var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-swing         { animation: animSwingIn    var(--app-transition,280ms) ease both; }
+.anim-rubber        { animation: animRubber     var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-pop           { animation: animPop        calc(var(--app-transition,280ms)*0.8) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-morph         { animation: animMorph      var(--app-transition,280ms) ease both; }
+.anim-drift-in      { animation: animDriftIn    var(--app-transition,280ms) ease both; }
+.anim-rise          { animation: animRise       var(--app-transition,280ms) ease both; }
+.anim-unfold        { animation: animUnfold     var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-shutter       { animation: animShutter    var(--app-transition,280ms) ease both; }
+.anim-mega          { animation: animMega       calc(var(--app-transition,280ms)*1.4) cubic-bezier(.22,.68,0,1.2) both; }
+
+/* ─── Extended animations — 71 new (101 total) ───────────────────────────── */
+
+/* ── Fade family ── */
+@keyframes animFadeUp     { from { opacity:0; transform:translateY(calc(var(--app-anim-distance,36px)*.6)); } to { opacity:1; transform:translateY(0); } }
+@keyframes animFadeDown   { from { opacity:0; transform:translateY(calc(-1 * var(--app-anim-distance,36px)*.6)); } to { opacity:1; transform:translateY(0); } }
+@keyframes animFadeZoom   { from { opacity:0; transform:scale(.97); } to { opacity:1; transform:scale(1); } }
+@keyframes animFlashIn    { 0%{opacity:0}20%{opacity:1}40%{opacity:.3}60%{opacity:1}80%{opacity:.7}100%{opacity:1} }
+@keyframes animFog        { from { opacity:0; filter:blur(22px); } to { opacity:1; filter:blur(0); } }
+@keyframes animDissolve   { from { opacity:0; filter:blur(14px); transform:scale(.96); } to { opacity:1; filter:blur(0); transform:scale(1); } }
+
+/* ── Zoom family ── */
+@keyframes animZoomOut    { from { opacity:0; transform:scale(1.28); } to { opacity:1; transform:scale(1); } }
+@keyframes animZoomUp     { from { opacity:0; transform:scale(.88) translateY(calc(var(--app-anim-distance,36px)*.5)); } to { opacity:1; transform:scale(1) translateY(0); } }
+@keyframes animZoomDown   { from { opacity:0; transform:scale(.88) translateY(calc(-1 * var(--app-anim-distance,36px)*.5)); } to { opacity:1; transform:scale(1) translateY(0); } }
+@keyframes animImplode    { from { opacity:0; transform:scale(1.6); } to { opacity:1; transform:scale(1); } }
+@keyframes animExplode    { 0%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1.14)}75%{transform:scale(.97)}100%{opacity:1;transform:scale(1)} }
+@keyframes animBackIn     { from { opacity:0; transform:scale(1.5); } to { opacity:1; transform:scale(1); } }
+@keyframes animPing       { 0%{opacity:0;transform:scale(.8)}40%{opacity:1;transform:scale(1.12)}65%{transform:scale(.94)}80%{transform:scale(1.04)}90%{transform:scale(.98)}100%{opacity:1;transform:scale(1)} }
+
+/* ── New directional ── */
+@keyframes animRushRight  { from{opacity:0;filter:blur(16px);transform:translateX(calc(var(--app-anim-distance,36px)*3)) scaleX(.8)}70%{opacity:1;filter:blur(0);transform:translateX(-6px) scaleX(1.02)}to{opacity:1;filter:blur(0);transform:translateX(0) scaleX(1)} }
+@keyframes animRushLeft   { from{opacity:0;filter:blur(16px);transform:translateX(calc(-3 * var(--app-anim-distance,36px))) scaleX(.8)}70%{opacity:1;filter:blur(0);transform:translateX(6px) scaleX(1.02)}to{opacity:1;filter:blur(0);transform:translateX(0) scaleX(1)} }
+@keyframes animSlingRight { 0%{opacity:0;transform:translateX(calc(var(--app-anim-distance,36px)*2))}50%{opacity:1;transform:translateX(-18px)}70%{transform:translateX(10px)}85%{transform:translateX(-5px)}100%{opacity:1;transform:translateX(0)} }
+@keyframes animSlingLeft  { 0%{opacity:0;transform:translateX(calc(-2 * var(--app-anim-distance,36px)))}50%{opacity:1;transform:translateX(18px)}70%{transform:translateX(-10px)}85%{transform:translateX(5px)}100%{opacity:1;transform:translateX(0)} }
+@keyframes animSwooshRight{ from{opacity:0;transform:translateX(calc(var(--app-anim-distance,36px)*1.5)) scaleX(.85)}65%{opacity:1;transform:translateX(-8px) scaleX(1.02)}to{opacity:1;transform:translateX(0) scaleX(1)} }
+@keyframes animSwooshLeft { from{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)*1.5)) scaleX(.85)}65%{opacity:1;transform:translateX(8px) scaleX(1.02)}to{opacity:1;transform:translateX(0) scaleX(1)} }
+@keyframes animKickRight  { 0%{opacity:0;transform:translateX(calc(var(--app-anim-distance,36px)*.5)) scaleX(.9)}40%{opacity:1;transform:translateX(-14px) scaleX(1.04)}65%{transform:translateX(8px) scaleX(.98)}82%{transform:translateX(-4px) scaleX(1.01)}100%{opacity:1;transform:translateX(0) scaleX(1)} }
+@keyframes animKickLeft   { 0%{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)*.5)) scaleX(.9)}40%{opacity:1;transform:translateX(14px) scaleX(1.04)}65%{transform:translateX(-8px) scaleX(.98)}82%{transform:translateX(4px) scaleX(1.01)}100%{opacity:1;transform:translateX(0) scaleX(1)} }
+@keyframes animSkewRight  { from{opacity:0;transform:translateX(var(--app-anim-distance,36px)) skewX(-18deg)}to{opacity:1;transform:translateX(0) skewX(0)} }
+@keyframes animSkewLeft   { from{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px))) skewX(18deg)}to{opacity:1;transform:translateX(0) skewX(0)} }
+@keyframes animWarpRight  { from{opacity:0;transform:translateX(calc(var(--app-anim-distance,36px)*1.5)) scaleY(.7) skewX(-15deg)}to{opacity:1;transform:translateX(0) scaleY(1) skewX(0)} }
+@keyframes animWarpLeft   { from{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)*1.5)) scaleY(.7) skewX(15deg)}to{opacity:1;transform:translateX(0) scaleY(1) skewX(0)} }
+@keyframes animTiltRight  { from{opacity:0;transform:perspective(800px) rotateY(-40deg) translateX(calc(var(--app-anim-distance,36px)*.6))}to{opacity:1;transform:perspective(800px) rotateY(0) translateX(0)} }
+@keyframes animTiltLeft   { from{opacity:0;transform:perspective(800px) rotateY(40deg) translateX(calc(-1 * var(--app-anim-distance,36px)*.6))}to{opacity:1;transform:perspective(800px) rotateY(0) translateX(0)} }
+@keyframes animSpinDirRight{ from{opacity:0;transform:translateX(var(--app-anim-distance,36px)) rotate(-45deg) scale(.85)}to{opacity:1;transform:translateX(0) rotate(0) scale(1)} }
+@keyframes animSpinDirLeft { from{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px))) rotate(45deg) scale(.85)}to{opacity:1;transform:translateX(0) rotate(0) scale(1)} }
+@keyframes animRollDirRight{ from{opacity:0;transform:translateX(calc(var(--app-anim-distance,36px)*1.2)) rotate(120deg)}to{opacity:1;transform:translateX(0) rotate(0)} }
+@keyframes animRollDirLeft { from{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)*1.2)) rotate(-120deg)}to{opacity:1;transform:translateX(0) rotate(0)} }
+@keyframes animBounceDirR  { 0%{opacity:0;transform:translateX(calc(var(--app-anim-distance,36px)*1.2))}45%{opacity:1;transform:translateX(-16px)}65%{transform:translateX(9px)}80%{transform:translateX(-5px)}90%{transform:translateX(3px)}100%{opacity:1;transform:translateX(0)} }
+@keyframes animBounceDirL  { 0%{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)*1.2))}45%{opacity:1;transform:translateX(16px)}65%{transform:translateX(-9px)}80%{transform:translateX(5px)}90%{transform:translateX(-3px)}100%{opacity:1;transform:translateX(0)} }
+
+/* ── Bounce/Spring family ── */
+@keyframes animBounceDown { 0%{opacity:0;transform:translateY(calc(-1 * var(--app-anim-distance,36px)*1.5))}50%{opacity:1;transform:translateY(10px)}70%{transform:translateY(-6px)}85%{transform:translateY(4px)}100%{opacity:1;transform:translateY(0)} }
+@keyframes animWobbleIn   { 0%{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)))}30%{opacity:1;transform:translateX(14px)}50%{transform:translateX(-10px)}70%{transform:translateX(6px)}85%{transform:translateX(-3px)}100%{opacity:1;transform:translateX(0)} }
+@keyframes animJello      { 0%{opacity:0;transform:scale(.8) skew(0,0)}30%{opacity:1;transform:scale(1.1) skewX(-8deg) skewY(-2deg)}50%{transform:scale(.95) skewX(6deg) skewY(1deg)}70%{transform:scale(1.04) skewX(-3deg)}85%{transform:scale(.98) skewX(1.5deg)}100%{opacity:1;transform:scale(1) skew(0,0)} }
+@keyframes animElastic    { 0%{opacity:0;transform:scaleX(.4)}40%{opacity:1;transform:scaleX(1.16)}60%{transform:scaleX(.9)}75%{transform:scaleX(1.06)}87%{transform:scaleX(.97)}100%{opacity:1;transform:scaleX(1)} }
+@keyframes animScaleBnc   { 0%{opacity:0;transform:scale(.7)}55%{opacity:1;transform:scale(1.06)}75%{transform:scale(.97)}90%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)} }
+@keyframes animSnap       { 0%{opacity:0;transform:scale(.95)}40%{transform:scale(1.03)}70%{transform:scale(.99)}100%{opacity:1;transform:scale(1)} }
+@keyframes animPulseIn    { 0%{opacity:0;transform:scale(.95)}40%{opacity:1;transform:scale(1.06)}60%{transform:scale(.97)}80%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)} }
+@keyframes animStamp      { 0%{opacity:0;transform:scale(.5) translateY(calc(-1 * var(--app-anim-distance,36px)*2))}60%{opacity:1;transform:scale(1.05) translateY(6px)}80%{transform:scale(.98) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes animSlam       { 0%{opacity:0;transform:scaleY(.5) translateY(calc(-1 * var(--app-anim-distance,36px)*2)) scaleX(.9)}50%{opacity:1;transform:scaleY(1.08) translateY(8px) scaleX(.98)}75%{transform:scaleY(.96) translateY(-3px) scaleX(1.01)}100%{opacity:1;transform:scaleY(1) translateY(0) scaleX(1)} }
+
+/* ── Rotation / 3D family ── */
+@keyframes animSpinIn     { from{opacity:0;transform:rotate(-360deg) scale(.5)}to{opacity:1;transform:rotate(0) scale(1)} }
+@keyframes animFlipX      { from{opacity:0;transform:perspective(800px) rotateX(80deg)}to{opacity:1;transform:perspective(800px) rotateX(0)} }
+@keyframes animFlipXBnc   { 0%{opacity:0;transform:perspective(900px) rotateX(-80deg)}55%{opacity:1;transform:perspective(900px) rotateX(8deg)}75%{transform:perspective(900px) rotateX(-4deg)}100%{opacity:1;transform:perspective(900px) rotateX(0)} }
+@keyframes animFlipDown   { from{opacity:0;transform:perspective(900px) rotateX(-80deg);transform-origin:top center}to{opacity:1;transform:perspective(900px) rotateX(0);transform-origin:top center} }
+@keyframes animFlipUp     { from{opacity:0;transform:perspective(900px) rotateX(80deg);transform-origin:bottom center}to{opacity:1;transform:perspective(900px) rotateX(0);transform-origin:bottom center} }
+@keyframes animFlipZoom   { from{opacity:0;transform:perspective(900px) rotateY(60deg) scale(.8)}to{opacity:1;transform:perspective(900px) rotateY(0) scale(1)} }
+@keyframes animSpinZoom   { from{opacity:0;transform:rotate(-180deg) scale(.5)}to{opacity:1;transform:rotate(0) scale(1)} }
+@keyframes animFold       { from{opacity:0;transform:perspective(800px) scaleX(0) rotateY(45deg)}to{opacity:1;transform:perspective(800px) scaleX(1) rotateY(0)} }
+@keyframes animTiltIn     { from{opacity:0;transform:perspective(600px) rotateX(20deg) rotateZ(-5deg) translateY(20px)}to{opacity:1;transform:perspective(600px) rotateX(0) rotateZ(0) translateY(0)} }
+@keyframes animPageIn     { from{opacity:0;transform:perspective(1200px) rotateY(-90deg) translateX(calc(-1 * var(--app-anim-distance,36px)))}70%{opacity:1;transform:perspective(1200px) rotateY(4deg) translateX(4px)}to{opacity:1;transform:perspective(1200px) rotateY(0) translateX(0)} }
+@keyframes animBarrel     { from{opacity:0;transform:rotate(-360deg) scale(.6)}60%{opacity:1;transform:rotate(20deg) scale(1.04)}to{opacity:1;transform:rotate(0) scale(1)} }
+@keyframes animSpiral     { from{opacity:0;transform:rotate(-540deg) scale(.2)}to{opacity:1;transform:rotate(0) scale(1)} }
+@keyframes animVortex     { from{opacity:0;filter:blur(10px);transform:rotate(-720deg) scale(.1)}to{opacity:1;filter:blur(0);transform:rotate(0) scale(1)} }
+@keyframes animRollIn     { from{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px))) rotate(-120deg)}to{opacity:1;transform:translateX(0) rotate(0)} }
+@keyframes animPendulum   { 0%{opacity:0;transform:perspective(900px) rotate(-40deg);transform-origin:top center}40%{opacity:1;transform:perspective(900px) rotate(12deg);transform-origin:top center}65%{transform:perspective(900px) rotate(-6deg);transform-origin:top center}82%{transform:perspective(900px) rotate(3deg);transform-origin:top center}100%{opacity:1;transform:perspective(900px) rotate(0);transform-origin:top center} }
+@keyframes animClock      { from{opacity:0;transform:rotate(-180deg) scale(.8)}to{opacity:1;transform:rotate(0) scale(1)} }
+
+/* ── Reveal family ── */
+@keyframes animCurtain    { from{opacity:1;transform:scaleX(0);transform-origin:left center}to{opacity:1;transform:scaleX(1);transform-origin:left center} }
+@keyframes animWipeLeft   { from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0% 0 0)} }
+@keyframes animWipeRight  { from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0%)} }
+@keyframes animTvOn       { 0%{opacity:0;transform:scaleX(.005) scaleY(.1)}25%{opacity:1;transform:scaleX(1) scaleY(.1)}60%{transform:scaleX(1.02) scaleY(1.02)}100%{opacity:1;transform:scaleX(1) scaleY(1)} }
+@keyframes animCompress   { from{opacity:0;transform:scaleX(.05)}60%{opacity:1;transform:scaleX(1.04)}to{opacity:1;transform:scaleX(1)} }
+@keyframes animExpand     { from{opacity:0;transform:scaleX(2)}to{opacity:1;transform:scaleX(1)} }
+
+/* ── Vertical family ── */
+@keyframes animFloat      { from{opacity:0;transform:translateY(calc(var(--app-anim-distance,36px)*.4))}to{opacity:1;transform:translateY(0)} }
+@keyframes animLevitate   { from{opacity:0;transform:translateY(calc(var(--app-anim-distance,36px)*.3))}to{opacity:1;transform:translateY(0)} }
+@keyframes animGravity    { 0%{opacity:0;transform:translateY(calc(-1 * var(--app-anim-distance,36px)*3))}60%{opacity:1;transform:translateY(6px)}80%{transform:translateY(-3px)}100%{opacity:1;transform:translateY(0)} }
+@keyframes animBlurUp     { from{opacity:0;filter:blur(8px);transform:translateY(calc(var(--app-anim-distance,36px)*.5))}to{opacity:1;filter:blur(0);transform:translateY(0)} }
+@keyframes animBlurDown   { from{opacity:0;filter:blur(8px);transform:translateY(calc(-1 * var(--app-anim-distance,36px)*.5))}to{opacity:1;filter:blur(0);transform:translateY(0)} }
+@keyframes animDriftUp    { from{opacity:0;transform:translate(calc(-1 * var(--app-anim-distance,36px)*.5),calc(var(--app-anim-distance,36px)*.5))}to{opacity:1;transform:translate(0,0)} }
+@keyframes animDriftDown  { from{opacity:0;transform:translate(calc(-1 * var(--app-anim-distance,36px)*.5),calc(-1 * var(--app-anim-distance,36px)*.5))}to{opacity:1;transform:translate(0,0)} }
+
+/* ── Fun/Theatrical family ── */
+@keyframes animTada       { 0%{opacity:0;transform:scale(.9) rotate(-3deg)}25%{opacity:1;transform:scale(1.12) rotate(-3deg)}40%{transform:scale(1.12) rotate(3deg)}55%{transform:scale(1.12) rotate(-3deg)}70%{transform:scale(1.12) rotate(3deg)}85%{transform:scale(1) rotate(-1deg)}100%{opacity:1;transform:scale(1) rotate(0)} }
+@keyframes animHeartbeat  { 0%{opacity:0;transform:scale(.8)}25%{opacity:1;transform:scale(1.1)}40%{transform:scale(1)}55%{transform:scale(1.08)}70%{transform:scale(1)}100%{opacity:1;transform:scale(1)} }
+@keyframes animHinge      { 0%{opacity:0;transform:rotate(0);transform-origin:top left}20%{transform:rotate(80deg);transform-origin:top left;opacity:1}40%{transform:rotate(60deg);transform-origin:top left}60%{transform:rotate(80deg);transform-origin:top left}80%{transform:rotate(60deg);transform-origin:top left;opacity:1}100%{transform:translateY(0) rotate(0);transform-origin:top left;opacity:1} }
+@keyframes animNewspaper  { from{opacity:0;transform:rotate(720deg) scale(0)}to{opacity:1;transform:rotate(0) scale(1)} }
+@keyframes animCascade    { 0%{opacity:0;transform:translateY(-20px) rotate(-4deg)}50%{opacity:1;transform:translateY(8px) rotate(1deg)}100%{opacity:1;transform:translateY(0) rotate(0)} }
+@keyframes animSway       { 0%{opacity:0;transform:translateX(calc(-1 * var(--app-anim-distance,36px)*.3))}25%{opacity:1;transform:translateX(calc(var(--app-anim-distance,36px)*.2))}50%{transform:translateX(calc(-1 * var(--app-anim-distance,36px)*.12))}75%{transform:translateX(calc(var(--app-anim-distance,36px)*.06))}100%{opacity:1;transform:translateX(0)} }
+@keyframes animRotSlide   { from{opacity:0;transform:rotate(15deg) translateY(calc(var(--app-anim-distance,36px)*.6))}to{opacity:1;transform:rotate(0) translateY(0)} }
+@keyframes animBlurRot    { from{opacity:0;filter:blur(10px);transform:rotate(-20deg)}to{opacity:1;filter:blur(0);transform:rotate(0)} }
+@keyframes animBlurBnc    { 0%{opacity:0;filter:blur(6px);transform:scale(.7)}50%{opacity:1;filter:blur(0);transform:scale(1.08)}75%{transform:scale(.96)}100%{opacity:1;transform:scale(1)} }
+
+/* ── Speed family ── */
+@keyframes animLightSpeed { from{opacity:0;filter:blur(20px);transform:translateX(calc(var(--app-anim-distance,36px)*4)) skewX(-20deg)}60%{opacity:1;filter:blur(0);transform:translateX(-8px) skewX(2deg)}80%{transform:translateX(4px) skewX(-1deg)}100%{opacity:1;filter:blur(0);transform:translateX(0) skewX(0)} }
+
+/* ── CSS classes — non-directional (61) ── */
+.anim-fade-up      { animation: animFadeUp      var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-fade-down    { animation: animFadeDown     var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-fade-zoom    { animation: animFadeZoom     var(--app-transition,280ms) ease both; }
+.anim-flash-in     { animation: animFlashIn      var(--app-transition,280ms) ease both; }
+.anim-fog          { animation: animFog          var(--app-transition,280ms) ease both; }
+.anim-dissolve     { animation: animDissolve     var(--app-transition,280ms) ease both; }
+.anim-zoom-out     { animation: animZoomOut      var(--app-transition,280ms) ease both; }
+.anim-zoom-up      { animation: animZoomUp       var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-zoom-down    { animation: animZoomDown     var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-implode      { animation: animImplode      var(--app-transition,280ms) ease both; }
+.anim-explode      { animation: animExplode      var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-back-in      { animation: animBackIn       var(--app-transition,280ms) ease both; }
+.anim-ping         { animation: animPing         var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-bounce-down  { animation: animBounceDown   var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-wobble-in    { animation: animWobbleIn     var(--app-transition,280ms) ease both; }
+.anim-jello        { animation: animJello        var(--app-transition,280ms) ease both; }
+.anim-elastic      { animation: animElastic      var(--app-transition,280ms) ease both; }
+.anim-scale-bounce { animation: animScaleBnc     var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-snap         { animation: animSnap         calc(var(--app-transition,280ms)*.6) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-pulse-in     { animation: animPulseIn      var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-stamp        { animation: animStamp        var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-slam         { animation: animSlam         var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-spin-in      { animation: animSpinIn       var(--app-transition,280ms) ease both; }
+.anim-flip-x       { animation: animFlipX        var(--app-transition,280ms) ease both; }
+.anim-flip-x-bounce{ animation: animFlipXBnc     var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-flip-down    { animation: animFlipDown     var(--app-transition,280ms) ease both; }
+.anim-flip-up      { animation: animFlipUp       var(--app-transition,280ms) ease both; }
+.anim-flip-zoom    { animation: animFlipZoom     var(--app-transition,280ms) ease both; }
+.anim-spin-zoom    { animation: animSpinZoom     var(--app-transition,280ms) ease both; }
+.anim-fold         { animation: animFold         var(--app-transition,280ms) ease both; }
+.anim-tilt-in      { animation: animTiltIn       var(--app-transition,280ms) ease both; }
+.anim-page-in      { animation: animPageIn       var(--app-transition,280ms) ease both; }
+.anim-barrel       { animation: animBarrel       var(--app-transition,280ms) ease both; }
+.anim-spiral       { animation: animSpiral       calc(var(--app-transition,280ms)*1.2) ease both; }
+.anim-vortex       { animation: animVortex       calc(var(--app-transition,280ms)*1.2) ease both; }
+.anim-roll-in      { animation: animRollIn       var(--app-transition,280ms) ease both; }
+.anim-pendulum     { animation: animPendulum     var(--app-transition,280ms) ease both; }
+.anim-clock        { animation: animClock        var(--app-transition,280ms) ease both; }
+.anim-curtain      { animation: animCurtain      var(--app-transition,280ms) ease both; }
+.anim-wipe-left    { animation: animWipeLeft     var(--app-transition,280ms) ease both; }
+.anim-wipe-right   { animation: animWipeRight    var(--app-transition,280ms) ease both; }
+.anim-tv-on        { animation: animTvOn         var(--app-transition,280ms) ease both; }
+.anim-compress     { animation: animCompress     var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-expand       { animation: animExpand       var(--app-transition,280ms) ease both; }
+.anim-float        { animation: animFloat        var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-levitate     { animation: animLevitate     calc(var(--app-transition,280ms)*1.4) ease both; }
+.anim-gravity      { animation: animGravity      var(--app-transition,280ms) ease both; }
+.anim-blur-up      { animation: animBlurUp       var(--app-transition,280ms) ease both; }
+.anim-blur-down    { animation: animBlurDown     var(--app-transition,280ms) ease both; }
+.anim-drift-up     { animation: animDriftUp      var(--app-transition,280ms) ease both; }
+.anim-drift-down   { animation: animDriftDown    var(--app-transition,280ms) ease both; }
+.anim-tada         { animation: animTada         var(--app-transition,280ms) ease both; }
+.anim-heartbeat    { animation: animHeartbeat    var(--app-transition,280ms) ease both; }
+.anim-hinge        { animation: animHinge        calc(var(--app-transition,280ms)*1.3) ease both; }
+.anim-newspaper    { animation: animNewspaper    calc(var(--app-transition,280ms)*1.2) ease both; }
+.anim-cascade      { animation: animCascade      var(--app-transition,280ms) ease both; }
+.anim-sway         { animation: animSway         var(--app-transition,280ms) ease both; }
+.anim-rotate-slide { animation: animRotSlide     var(--app-transition,280ms) ease both; }
+.anim-blur-rotate  { animation: animBlurRot      var(--app-transition,280ms) ease both; }
+.anim-blur-bounce  { animation: animBlurBnc      var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-light-speed  { animation: animLightSpeed   calc(var(--app-transition,280ms)*.8) ease both; }
+
+/* ── CSS classes — directional (10 × 2 = 20) ── */
+.anim-rush-right      { animation: animRushRight    calc(var(--app-transition,280ms)*.8) ease both; }
+.anim-rush-left       { animation: animRushLeft     calc(var(--app-transition,280ms)*.8) ease both; }
+.anim-sling-right     { animation: animSlingRight   var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-sling-left      { animation: animSlingLeft    var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-swoosh-right    { animation: animSwooshRight  calc(var(--app-transition,280ms)*.9) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-swoosh-left     { animation: animSwooshLeft   calc(var(--app-transition,280ms)*.9) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-kick-right      { animation: animKickRight    var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-kick-left       { animation: animKickLeft     var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-skew-right      { animation: animSkewRight    var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-skew-left       { animation: animSkewLeft     var(--app-transition,280ms) cubic-bezier(.22,.68,0,1.2) both; }
+.anim-warp-right      { animation: animWarpRight    var(--app-transition,280ms) ease both; }
+.anim-warp-left       { animation: animWarpLeft     var(--app-transition,280ms) ease both; }
+.anim-tilt-right      { animation: animTiltRight    var(--app-transition,280ms) ease both; }
+.anim-tilt-left       { animation: animTiltLeft     var(--app-transition,280ms) ease both; }
+.anim-spin-dir-right  { animation: animSpinDirRight var(--app-transition,280ms) ease both; }
+.anim-spin-dir-left   { animation: animSpinDirLeft  var(--app-transition,280ms) ease both; }
+.anim-roll-dir-right  { animation: animRollDirRight var(--app-transition,280ms) ease both; }
+.anim-roll-dir-left   { animation: animRollDirLeft  var(--app-transition,280ms) ease both; }
+.anim-bounce-dir-right{ animation: animBounceDirR   var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+.anim-bounce-dir-left { animation: animBounceDirL   var(--app-transition,280ms) cubic-bezier(.34,1.56,.64,1) both; }
+
+/* ─── Scroll-reveal for Spread tab cards ─────────────────────────────────── */
+@keyframes scrollReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.scroll-reveal {
+  opacity: 0;
+}
+.scroll-reveal.visible {
+  animation: scrollReveal 0.45s cubic-bezier(.22,.68,0,1.2) both;
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe area for bottom nav on mobile */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 8px); }
+
+/* Dynamic font scale */
+body { font-size: var(--app-font-scale, 100%); }
+
+/* ─── Font role custom properties ────────────────────────────────────────── */
+/* Applied by DevOptions / applyTheme; fall back to system sans-serif */
+nav, [data-font-nav]   { font-family: var(--app-font-nav, 'Inter', sans-serif); }
+h1, [data-font-title]  { font-family: var(--app-font-title, 'Inter', sans-serif); }
+h2, h3, [data-font-heading] { font-family: var(--app-font-heading, 'Inter', sans-serif); }
+h4, h5, h6, [data-font-subheading] { font-family: var(--app-font-subheading, 'Inter', sans-serif); }
+p, span, [data-font-panel] { font-family: var(--app-font-panel, 'Inter', sans-serif); }
+
+/* ─── GPU-composited animation containers ────────────────────────────────── */
+/* Force tab-switch containers onto their own compositor layer for zero-jank */
+[class*="anim-"] {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Contain layout thrashing during tab transitions */
+.tab-content-container {
+  contain: layout style;
+}

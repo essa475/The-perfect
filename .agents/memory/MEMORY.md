@@ -1,0 +1,5 @@
+- [TradingView embed widget limits](tradingview-embed-widget.md) — free embed widget has no update API; config changes require full script reinjection, and third-party community indicators can't be auto-added.
+- [Dev Options performance pattern](dev-options-perf.md) — slider `update()` must use rAF coalescing + debounced localStorage save; `resetAll()` must explicitly cancel both before applying defaults or stale values can overwrite the reset.
+- [Animation system — 30 styles](animation-system.md) — directional styles (slide/flip/slide-flip/slide-blur/slide-zoom/glide) need -left/-right CSS class pairs; animClassFor() branches on DIRECTIONAL_STYLES set; all others are single classes.
+- [TradingView mobile height](tradingview-mobile.md) — use `100dvh` (not `h-screen`) for the trading tab container to account for mobile browser chrome; inner TradingViewTab uses calc(100dvh - 140px).
+- [About easter egg](about-easter-egg.md) — hidden "i" button in Dev Options (password: ESSA via ABOUT_PASSWORD const); separate from DEV_PASSWORD; persists via ABOUT_UNLOCK_KEY in localStorage.

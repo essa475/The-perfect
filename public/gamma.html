@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamma Levels — XAUUSD</title>
+<style>
+:root {
+  --bg:        #06070e;
+  --bg2:       #0c0d18;
+  --bg3:       #111220;
+  --border:    rgba(255,255,255,0.07);
+  --amber:     #f59e0b;
+  --amber-glow:rgba(245,158,11,0.18);
+  --amber-dim: rgba(245,158,11,0.08);
+  --text:      #e2e8f0;
+  --text-dim:  #64748b;
+  --text-muted:#334155;
+  --computed:  rgba(245,158,11,0.04);
+  --ro-text:   #94a3b8;
+  --green:     #34d399;
+  --red:       #f87171;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Courier New',Courier,monospace;font-size:11px}
+
+/* ── app layout ─────────────────────────────────────────────── */
+#root{display:flex;flex-direction:column;height:100vh}
+#topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 14px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+#topbar .logo{font-size:16px;font-weight:900;color:var(--amber);letter-spacing:.5px}
+#topbar .sub{font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
+#topbar .spacer{flex:1}
+#topbar .badge{
+  font-size:9px;padding:3px 8px;border-radius:6px;
+  background:var(--amber-dim);border:1px solid var(--amber-glow);
+  color:var(--amber);letter-spacing:.5px;text-transform:uppercase
+}
+
+/* ── split pane ─────────────────────────────────────────────── */
+#main{display:flex;flex:1;overflow:hidden}
+#left-pane{flex:1;overflow:auto;position:relative}
+#right-pane{
+  width:340px;flex-shrink:0;
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  background:var(--bg2);
+  overflow:hidden;
+}
+
+/* ── spreadsheet table ──────────────────────────────────────── */
+#sheet-wrap{min-width:max-content;padding-bottom:40px}
+table#sheet{border-collapse:collapse;table-layout:fixed}
+table#sheet th,table#sheet td{
+  border:1px solid var(--border);
+  height:22px;white-space:nowrap;overflow:hidden;
+  vertical-align:middle;
+}
+
+/* column letter header row */
+.col-hdr{
+  position:sticky;top:0;z-index:20;
+  background:var(--bg3);color:var(--text-dim);
+  text-align:center;font-weight:700;font-size:10px;
+  border-bottom:2px solid var(--border);
+  padding:0 4px;
+  user-select:none;
+}
+/* row number cells */
+.row-num{
+  position:sticky;left:0;z-index:10;
+  background:var(--bg3);color:var(--text-muted);
+  text-align:right;padding:0 4px;
+  min-width:32px;width:32px;font-size:10px;
+  border-right:2px solid var(--border);
+}
+/* top-left corner */
+.corner{position:sticky;top:0;left:0;z-index:30;background:var(--bg3)}
+
+/* editable cells */
+.cell-edit{background:var(--bg);padding:0}
+.cell-edit input{
+  width:100%;height:100%;background:transparent;border:none;outline:none;
+  color:var(--text);font-family:inherit;font-size:11px;padding:0 4px;
+  text-align:right;
+}
+.cell-edit input:focus{background:rgba(245,158,11,0.08)}
+.cell-edit.left input{text-align:left}
+
+/* read-only computed cells */
+.cell-ro{background:var(--computed);padding:0 5px;color:var(--ro-text);text-align:right}
+.cell-ro.center{text-align:center}
+.cell-ro.left{text-align:left}
+
+/* label cells */
+.cell-label{
+  background:var(--bg3);color:var(--amber);
+  font-weight:700;padding:0 5px;text-align:left;font-size:10px;
+}
+/* header rows (row 8-9) */
+.cell-hdr{
+  background:var(--bg3);color:var(--text-dim);
+  font-weight:700;padding:0 5px;text-align:center;font-size:10px;
+  border-bottom:2px solid var(--amber-glow);
+}
+/* blank spacer */
+.cell-blank{background:var(--bg);padding:0}
+/* value cells (computed, highlighted) */
+.cell-val{background:var(--amber-dim);padding:0 5px;color:var(--amber);font-weight:700;text-align:right}
+
+/* dashboard string cell */
+.cell-dash{background:transparent;padding:0 4px;color:var(--ro-text);font-size:10px;text-align:left}
+
+/* ── column widths ──────────────────────────────────────────── */
+.w-rn{width:32px;min-width:32px}
+.w-a {width:80px;min-width:80px}   /* A call strike */
+.w-b {width:90px;min-width:90px}   /* B call OI */
+.w-c {width:100px;min-width:100px} /* C inputs */
+.w-d {width:80px;min-width:80px}   /* D put strike */
+.w-e {width:90px;min-width:90px}   /* E put OI */
+.w-f {width:24px;min-width:24px}   /* F spacer */
+.w-g {width:80px;min-width:80px}   /* G strike */
+.w-h {width:110px;min-width:110px} /* H IV% */
+.w-i {width:24px;min-width:24px}   /* I spacer */
+.w-j {width:110px;min-width:110px} /* J IV val */
+.w-k {width:24px;min-width:24px}   /* K spacer */
+.w-l {width:70px;min-width:70px}   /* L contract */
+.w-m {width:80px;min-width:80px}   /* M strike merged */
+.w-n {width:90px;min-width:90px}   /* N call OI agg */
+.w-o {width:90px;min-width:90px}   /* O put OI agg */
+.w-p {width:80px;min-width:80px}   /* P IV mapped */
+.w-q {width:80px;min-width:80px}   /* Q TTM */
+.w-r {width:24px;min-width:24px}
+.w-s {width:24px;min-width:24px}
+.w-t {width:180px;min-width:180px} /* T dashboard */
+.w-u {width:90px;min-width:90px}   /* U range */
+
+/* ── right panel (dashboard) ────────────────────────────────── */
+#dash-header{
+  padding:10px 14px 8px;
+  border-bottom:1px solid var(--border);
+  color:var(--amber);font-weight:900;font-size:11px;
+  letter-spacing:1px;text-transform:uppercase;
+  flex-shrink:0;
+  display:flex;align-items:center;gap:8px;
+}
+#dash-header .count{
+  margin-left:auto;font-size:9px;color:var(--text-dim);
+  background:var(--amber-dim);border:1px solid var(--amber-glow);
+  padding:2px 7px;border-radius:6px;letter-spacing:.5px;
+}
+#dash-scroll{flex:1;overflow-y:auto}
+#dash-table{width:100%;border-collapse:collapse}
+#dash-table thead th{
+  position:sticky;top:0;
+  background:var(--bg3);color:var(--text-dim);
+  font-size:9px;text-transform:uppercase;letter-spacing:.5px;
+  padding:5px 8px;border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+#dash-table tbody tr{border-bottom:1px solid var(--border);cursor:default}
+#dash-table tbody tr:hover{background:rgba(255,255,255,0.03)}
+#dash-table td{padding:5px 8px;font-size:11px;tabular-nums:true}
+.dt-contract{color:var(--amber);font-weight:700}
+.dt-strike  {color:var(--text);font-weight:600}
+.dt-calloi  {color:var(--green)}
+.dt-putoi   {color:var(--red)}
+.dt-iv      {color:var(--ro-text)}
+.dt-ttm     {color:var(--text-dim)}
+#no-data{padding:20px;text-align:center;color:var(--text-muted);font-size:11px}
+
+/* ── stats bar ──────────────────────────────────────────────── */
+#stats-bar{
+  display:flex;gap:0;border-top:1px solid var(--border);
+  flex-shrink:0;background:var(--bg);
+}
+.stat-item{
+  flex:1;padding:6px 8px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:1px;
+}
+.stat-item:last-child{border-right:none}
+.stat-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.stat-val{font-size:11px;font-weight:700;color:var(--amber)}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2)}
+
+/* paste highlight flash */
+@keyframes flash{0%,100%{background:rgba(245,158,11,0.15)}50%{background:rgba(245,158,11,0.35)}}
+.pasted{animation:flash .35s ease}
+</style>
+</head>
+<body>
+<div id="root">
+
+  <!-- Top bar -->
+  <div id="topbar">
+    <div class="logo">⬡ Gamma Levels</div>
+    <div class="sub">XAUUSD · Data Input &amp; Dashboard</div>
+    <div class="spacer"></div>
+    <div class="badge" id="status-badge">Ready</div>
+  </div>
+
+  <!-- Main split -->
+  <div id="main">
+
+    <!-- Left: spreadsheet -->
+    <div id="left-pane">
+      <div id="sheet-wrap">
+        <table id="sheet"></table>
+      </div>
+    </div>
+
+    <!-- Right: dashboard -->
+    <div id="right-pane">
+      <div id="dash-header">
+        Dashboard
+        <span class="count" id="dash-count">0 levels</span>
+      </div>
+      <div id="dash-scroll">
+        <table id="dash-table">
+          <thead>
+            <tr>
+              <th>Contract</th>
+              <th>Strike</th>
+              <th>Call OI</th>
+              <th>Put OI</th>
+              <th>IV</th>
+              <th>TTM (d)</th>
+            </tr>
+          </thead>
+          <tbody id="dash-body"></tbody>
+        </table>
+        <div id="no-data">Enter data and set price range to see gamma levels</div>
+      </div>
+      <div id="stats-bar">
+        <div class="stat-item"><div class="stat-lbl">Max Call OI</div><div class="stat-val" id="stat-n6">—</div></div>
+        <div class="stat-item"><div class="stat-lbl">Max Put OI</div><div class="stat-val" id="stat-o6">—</div></div>
+        <div class="stat-item"><div class="stat-lbl">OI Threshold</div><div class="stat-val" id="stat-u6">—</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ─── constants ────────────────────────────────────────────────────────────────
+const MAX_ROWS   = 200;   // data rows (sheet rows 11 – 210)
+const DATA_START = 11;    // first data sheet row number
+
+// ─── data store ──────────────────────────────────────────────────────────────
+const D = {
+  c3: 'GC',
+  c4: '3.45',
+  c5: '0.2484',
+  u3: '2000',
+  u4: '8000',
+  callStrike : Array(MAX_ROWS).fill(''),
+  callOI     : Array(MAX_ROWS).fill(''),
+  putStrike  : Array(MAX_ROWS).fill(''),
+  putOI      : Array(MAX_ROWS).fill(''),
+  gStrike    : Array(MAX_ROWS).fill(''),
+  ivPct      : Array(MAX_ROWS).fill(''),
+};
+
+// computed results
+const C = {
+  j:[], l:[], m:[], n:[], o:[], p:[], q:[], t:[],
+  n6:0, o6:0, u6:0,
+};
+
+// DOM cell refs for fast updates
+const REF = {
+  j  : [], l:[], m:[], n:[], o:[], p:[], q:[], t:[],
+  n6 : null, o6: null, u6: null,
+  inputs: {}, // key: 'r,c' → input el
+};
+
+// ─── recalculation engine ─────────────────────────────────────────────────────
+function recalc() {
+  // 1. J = H/100
+  for (let i=0;i<MAX_ROWS;i++) {
+    const f = parseFloat(D.ivPct[i]);
+    C.j[i] = isNaN(f) ? '' : f/100;
+  }
+
+  // 2. Merged strike list (dedup, sort ascending)
+  const seen = new Set();
+  const merged = [];
+  for (let i=0;i<MAX_ROWS;i++) {
+    const v = parseFloat(D.callStrike[i]);
+    if (!isNaN(v)) seen.add(v);
+  }
+  for (let i=0;i<MAX_ROWS;i++) {
+    const v = parseFloat(D.putStrike[i]);
+    if (!isNaN(v)) seen.add(v);
+  }
+  seen.forEach(v => merged.push(v));
+  merged.sort((a,b)=>a-b);
+
+  // 3-7. L M N O P Q
+  for (let i=0;i<MAX_ROWS;i++) {
+    const strike = merged[i];
+    if (strike !== undefined) {
+      C.l[i] = D.c3;
+      C.m[i] = strike;
+      // N: sum callOI where callStrike == strike
+      let cn=0;
+      for (let j=0;j<MAX_ROWS;j++) {
+        if (parseFloat(D.callStrike[j])===strike) {
+          const v=parseFloat(D.callOI[j]);
+          if (!isNaN(v)) cn+=v;
+        }
+      }
+      C.n[i]=cn;
+      // O: sum putOI where putStrike == strike
+      let pn=0;
+      for (let j=0;j<MAX_ROWS;j++) {
+        if (parseFloat(D.putStrike[j])===strike) {
+          const v=parseFloat(D.putOI[j]);
+          if (!isNaN(v)) pn+=v;
+        }
+      }
+      C.o[i]=pn;
+      // P: IV from G/H table, fallback to c5
+      let ivSum=0, ivCnt=0;
+      for (let j=0;j<MAX_ROWS;j++) {
+        if (parseFloat(D.gStrike[j])===strike && D.ivPct[j]!=='') {
+          ivSum += parseFloat(D.ivPct[j])/100;
+          ivCnt++;
+        }
+      }
+      C.p[i] = ivCnt>0 ? ivSum/ivCnt : (parseFloat(D.c5)||0);
+      // Q: TTM days
+      C.q[i] = parseFloat(D.c4)||0;
+    } else {
+      C.l[i]='';C.m[i]='';C.n[i]='';C.o[i]='';C.p[i]='';C.q[i]='';
+    }
+  }
+
+  // 8-9. N6 O6
+  C.n6=0; C.o6=0;
+  for (let i=0;i<MAX_ROWS;i++) {
+    if (C.n[i]!=='' && C.n[i]>C.n6) C.n6=C.n[i];
+    if (C.o[i]!=='' && C.o[i]>C.o6) C.o6=C.o[i];
+  }
+
+  // 10. U6
+  C.u6 = Math.min(C.n6, C.o6) * 0.02;
+
+  // 11. T dashboard filter
+  const u3 = parseFloat(D.u3)||0;
+  const u4 = parseFloat(D.u4)||(1/0);
+  for (let i=0;i<MAX_ROWS;i++) {
+    if (C.l[i]!=='' && C.m[i]!=='') {
+      const m=C.m[i], n=C.n[i]||0, o=C.o[i]||0;
+      if (m>=u3 && m<=u4 && (n>=C.u6 || o>=C.u6)) {
+        C.t[i] = `${C.l[i]},${m},${n},${o},${typeof C.p[i]==='number'?C.p[i].toFixed(4):C.p[i]},${C.q[i]}`;
+      } else C.t[i]='';
+    } else C.t[i]='';
+  }
+}
+
+// ─── format helpers ───────────────────────────────────────────────────────────
+function fmt(v, decimals=2) {
+  if (v==='' || v===undefined) return '';
+  const n = typeof v==='number' ? v : parseFloat(v);
+  if (isNaN(n)) return '';
+  return n.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:decimals});
+}
+function fmtOI(v) {
+  if (v==='' || v===undefined || v===0) return '';
+  return fmt(v,0);
+}
+function fmtIV(v) {
+  if (v==='' || v===undefined) return '';
+  const n = typeof v==='number' ? v : parseFloat(v);
+  if (isNaN(n)) return '';
+  return (n*100).toFixed(2)+'%';
+}
+
+// ─── DOM update ───────────────────────────────────────────────────────────────
+function updateDisplay() {
+  for (let i=0;i<MAX_ROWS;i++) {
+    REF.j[i].textContent  = C.j[i]!=='' ? C.j[i].toFixed(6) : '';
+    REF.l[i].textContent  = C.l[i];
+    REF.m[i].textContent  = C.m[i]!=='' ? fmt(C.m[i],2) : '';
+    REF.n[i].textContent  = fmtOI(C.n[i]);
+    REF.o[i].textContent  = fmtOI(C.o[i]);
+    REF.p[i].textContent  = C.p[i]!=='' ? fmtIV(C.p[i]) : '';
+    REF.q[i].textContent  = C.q[i]!=='' ? fmt(C.q[i],2) : '';
+    REF.t[i].textContent  = C.t[i]||'';
+  }
+  REF.n6.textContent = C.n6 ? fmtOI(C.n6) : '—';
+  REF.o6.textContent = C.o6 ? fmtOI(C.o6) : '—';
+  REF.u6.textContent = C.u6 ? fmtOI(C.u6) : '—';
+  document.getElementById('stat-n6').textContent = C.n6 ? fmtOI(C.n6) : '—';
+  document.getElementById('stat-o6').textContent = C.o6 ? fmtOI(C.o6) : '—';
+  document.getElementById('stat-u6').textContent = C.u6 ? fmtOI(C.u6) : '—';
+  updateDashboard();
+}
+
+function updateDashboard() {
+  const rows = [];
+  for (let i=0;i<MAX_ROWS;i++) {
+    if (C.t[i]) rows.push(C.t[i].split(','));
+  }
+  const body = document.getElementById('dash-body');
+  const noData = document.getElementById('no-data');
+  document.getElementById('dash-count').textContent = rows.length+' level'+(rows.length!==1?'s':'');
+  if (!rows.length) {
+    body.innerHTML='';
+    noData.style.display='block';
+    return;
+  }
+  noData.style.display='none';
+  body.innerHTML = rows.map(r=>`
+    <tr>
+      <td class="dt-contract">${r[0]||''}</td>
+      <td class="dt-strike">${r[1]!==''?Number(r[1]).toLocaleString():''}</td>
+      <td class="dt-calloi">${r[2]!==''?Number(r[2]).toLocaleString():''}</td>
+      <td class="dt-putoi">${r[3]!==''?Number(r[3]).toLocaleString():''}</td>
+      <td class="dt-iv">${r[4]!==''?(parseFloat(r[4])*100).toFixed(2)+'%':''}</td>
+      <td class="dt-ttm">${r[5]||''}</td>
+    </tr>`).join('');
+}
+
+// ─── recalc + update (debounced) ─────────────────────────────────────────────
+let raf=null;
+function scheduleUpdate() {
+  if (raf) cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(()=>{ recalc(); updateDisplay(); raf=null; });
+}
+
+// ─── table builder ────────────────────────────────────────────────────────────
+function makeInput(type='text', placeholder='', align='right') {
+  const td = document.createElement('td');
+  td.className = 'cell-edit'+(align==='left'?' left':'');
+  const inp = document.createElement('input');
+  inp.type = type;
+  if (placeholder) inp.placeholder = placeholder;
+  inp.style.textAlign = align;
+  td.appendChild(inp);
+  return {td, inp};
+}
+function makeRO(extraClass='') {
+  const td = document.createElement('td');
+  td.className = 'cell-ro'+(extraClass?' '+extraClass:'');
+  return td;
+}
+function makeLabel(text, extraClass='') {
+  const td = document.createElement('td');
+  td.className = 'cell-label'+(extraClass?' '+extraClass:'');
+  td.textContent = text;
+  return td;
+}
+function makeHdr(text) {
+  const td = document.createElement('td');
+  td.className = 'cell-hdr';
+  td.textContent = text;
+  return td;
+}
+function makeBlank() {
+  const td = document.createElement('td');
+  td.className = 'cell-blank';
+  return td;
+}
+function makeVal(extraClass='') {
+  const td = document.createElement('td');
+  td.className = 'cell-val'+(extraClass?' '+extraClass:'');
+  return td;
+}
+
+const COLS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U'];
+const WMAP = {A:'w-a',B:'w-b',C:'w-c',D:'w-d',E:'w-e',F:'w-f',G:'w-g',H:'w-h',I:'w-i',J:'w-j',K:'w-k',L:'w-l',M:'w-m',N:'w-n',O:'w-o',P:'w-p',Q:'w-q',R:'w-r',S:'w-s',T:'w-t',U:'w-u'};
+
+function buildTable() {
+  const table = document.getElementById('sheet');
+  const tbody = document.createElement('tbody');
+
+  // ── column header row (A B C … U) ──────────────────────────────
+  const colHdrRow = document.createElement('tr');
+  colHdrRow.style.height='24px';
+  // corner
+  const corner = document.createElement('th');
+  corner.className='col-hdr corner w-rn';
+  colHdrRow.appendChild(corner);
+  COLS.forEach(c => {
+    const th = document.createElement('th');
+    th.className='col-hdr '+WMAP[c];
+    th.textContent=c;
+    colHdrRow.appendChild(th);
+  });
+  tbody.appendChild(colHdrRow);
+
+  // ── helper: blank row with row number ─────────────────────────
+  function blankRow(rowNum, cells) {
+    const tr = document.createElement('tr');
+    tr.style.height='22px';
+    const rn = document.createElement('td');
+    rn.className='row-num';rn.textContent=rowNum;
+    tr.appendChild(rn);
+    COLS.forEach(c => {
+      const cell = cells[c] || makeBlank();
+      if (WMAP[c]) cell.classList.add(WMAP[c]);
+      tr.appendChild(cell);
+    });
+    return tr;
+  }
+
+  // ── rows 1-2 ──────────────────────────────────────────────────
+  tbody.appendChild(blankRow(1,{}));
+  tbody.appendChild(blankRow(2,{
+    T: makeLabel('Price Range:'),
+  }));
+
+  // ── row 3: C3=contract name, T3 label, U3 input ──────────────
+  {
+    const {td:tdC3,inp:inpC3} = makeInput('text','GC','left');
+    inpC3.value=D.c3;
+    inpC3.addEventListener('input',()=>{ D.c3=inpC3.value.trim(); scheduleUpdate(); });
+    const {td:tdU3,inp:inpU3} = makeInput('number','2000');
+    inpU3.value=D.u3;
+    inpU3.addEventListener('input',()=>{ D.u3=inpU3.value; scheduleUpdate(); });
+    tbody.appendChild(blankRow(3,{
+      C:tdC3, T:makeLabel('Minimum '), U:tdU3,
+    }));
+  }
+
+  // ── row 4: C4=remaining days, T4, U4 ─────────────────────────
+  {
+    const {td:tdC4,inp:inpC4} = makeInput('number','3.45');
+    inpC4.value=D.c4;
+    inpC4.addEventListener('input',()=>{ D.c4=inpC4.value; scheduleUpdate(); });
+    const {td:tdU4,inp:inpU4} = makeInput('number','8000');
+    inpU4.value=D.u4;
+    inpU4.addEventListener('input',()=>{ D.u4=inpU4.value; scheduleUpdate(); });
+    tbody.appendChild(blankRow(4,{
+      C:tdC4, T:makeLabel('Maximum '), U:tdU4,
+    }));
+  }
+
+  // ── row 5: C5=ATM IV, N5 label, O5 label, T5 label ──────────
+  {
+    const {td:tdC5,inp:inpC5} = makeInput('number','0.2484');
+    inpC5.step='0.0001';
+    inpC5.value=D.c5;
+    inpC5.addEventListener('input',()=>{ D.c5=inpC5.value; scheduleUpdate(); });
+    const tdN5 = makeLabel('Max Call OI:'); tdN5.style.fontSize='9px';
+    const tdO5 = makeLabel('Max Put OI:');  tdO5.style.fontSize='9px';
+    tbody.appendChild(blankRow(5,{
+      C:tdC5, N:tdN5, O:tdO5, T:makeLabel('Open Interest:'),
+    }));
+  }
+
+  // ── row 6: N6=maxCallOI, O6=maxPutOI, T6 label, U6=threshold
+  {
+    const tdN6=makeVal(); REF.n6=tdN6;
+    const tdO6=makeVal(); REF.o6=tdO6;
+    const tdU6=makeVal(); REF.u6=tdU6;
+    tbody.appendChild(blankRow(6,{
+      N:tdN6, O:tdO6, T:makeLabel('Minimum '), U:tdU6,
+    }));
+  }
+
+  // ── rows 7 ───────────────────────────────────────────────────
+  tbody.appendChild(blankRow(7,{}));
+
+  // ── row 8: section headers ────────────────────────────────────
+  tbody.appendChild(blankRow(8,{
+    A:makeHdr('Call'),
+    D:makeHdr('Put'),
+    G:makeHdr('Strike'),
+    H:makeHdr('Implied Volitality %'),
+    J:makeHdr('Implied Volitality Value '),
+    L:makeHdr('Contract '),
+    M:makeHdr('Strike'),
+    N:makeHdr('Call OI'),
+    O:makeHdr('Put OI'),
+    P:makeHdr('IV'),
+    Q:makeHdr('TTM-Days'),
+    T:makeHdr('Dashboard '),
+  }));
+
+  // ── row 9: column sub-headers ─────────────────────────────────
+  tbody.appendChild(blankRow(9,{
+    A:makeHdr('Strike '),
+    B:makeHdr('Open Interest '),
+    D:makeHdr('Strike '),
+    E:makeHdr('Open Interest '),
+  }));
+
+  // ── row 10: blank separator ───────────────────────────────────
+  tbody.appendChild(blankRow(10,{}));
+
+  // ── data rows 11–(11+MAX_ROWS-1) ─────────────────────────────
+  for (let i=0;i<MAX_ROWS;i++) {
+    const rowNum = DATA_START + i;
+    const tr = document.createElement('tr');
+    tr.style.height='22px';
+    tr.dataset.ri = i;
+
+    // row number
+    const rn = document.createElement('td');
+    rn.className='row-num'; rn.textContent=rowNum;
+    tr.appendChild(rn);
+
+    // A: call strike
+    const {td:tdA,inp:inpA}=makeInput('number','');
+    tdA.classList.add('w-a');
+    inpA.dataset.col='A'; inpA.dataset.ri=i;
+    tr.appendChild(tdA);
+
+    // B: call OI
+    const {td:tdB,inp:inpB}=makeInput('number','');
+    tdB.classList.add('w-b');
+    inpB.dataset.col='B'; inpB.dataset.ri=i;
+    tr.appendChild(tdB);
+
+    // C blank
+    const tdC=makeBlank(); tdC.classList.add('w-c'); tr.appendChild(tdC);
+
+    // D: put strike
+    const {td:tdD,inp:inpD}=makeInput('number','');
+    tdD.classList.add('w-d');
+    inpD.dataset.col='D'; inpD.dataset.ri=i;
+    tr.appendChild(tdD);
+
+    // E: put OI
+    const {td:tdE,inp:inpE}=makeInput('number','');
+    tdE.classList.add('w-e');
+    inpE.dataset.col='E'; inpE.dataset.ri=i;
+    tr.appendChild(tdE);
+
+    // F blank spacer
+    const tdF=makeBlank(); tdF.classList.add('w-f'); tr.appendChild(tdF);
+
+    // G: g-strike
+    const {td:tdG,inp:inpG}=makeInput('number','');
+    tdG.classList.add('w-g');
+    inpG.dataset.col='G'; inpG.dataset.ri=i;
+    tr.appendChild(tdG);
+
+    // H: IV%
+    const {td:tdH,inp:inpH}=makeInput('number','');
+    tdH.classList.add('w-h');
+    inpH.step='0.01';
+    inpH.dataset.col='H'; inpH.dataset.ri=i;
+    tr.appendChild(tdH);
+
+    // I blank
+    const tdI=makeBlank(); tdI.classList.add('w-i'); tr.appendChild(tdI);
+
+    // J: computed IV decimal
+    const tdJ=makeRO(); tdJ.classList.add('w-j'); REF.j[i]=tdJ; tr.appendChild(tdJ);
+
+    // K blank
+    const tdK=makeBlank(); tdK.classList.add('w-k'); tr.appendChild(tdK);
+
+    // L: computed contract
+    const tdL=makeRO('left'); tdL.classList.add('w-l'); REF.l[i]=tdL; tr.appendChild(tdL);
+
+    // M: computed strike
+    const tdM=makeRO(); tdM.classList.add('w-m'); REF.m[i]=tdM; tr.appendChild(tdM);
+
+    // N: computed call OI agg
+    const tdN=makeRO(); tdN.classList.add('w-n'); REF.n[i]=tdN; tr.appendChild(tdN);
+
+    // O: computed put OI agg
+    const tdO=makeRO(); tdO.classList.add('w-o'); REF.o[i]=tdO; tr.appendChild(tdO);
+
+    // P: computed IV mapped
+    const tdP=makeRO(); tdP.classList.add('w-p'); REF.p[i]=tdP; tr.appendChild(tdP);
+
+    // Q: computed TTM
+    const tdQ=makeRO(); tdQ.classList.add('w-q'); REF.q[i]=tdQ; tr.appendChild(tdQ);
+
+    // R S blank
+    const tdR=makeBlank(); tdR.classList.add('w-r'); tr.appendChild(tdR);
+    const tdS=makeBlank(); tdS.classList.add('w-s'); tr.appendChild(tdS);
+
+    // T: computed dashboard string
+    const tdT=makeRO('left'); tdT.classList.add('w-t'); tdT.style.fontSize='10px'; REF.t[i]=tdT; tr.appendChild(tdT);
+
+    // U: blank (range inputs are in header rows only)
+    const tdU=makeBlank(); tdU.classList.add('w-u'); tr.appendChild(tdU);
+
+    // store input refs
+    REF.inputs[`${i},A`]=inpA;
+    REF.inputs[`${i},B`]=inpB;
+    REF.inputs[`${i},D`]=inpD;
+    REF.inputs[`${i},E`]=inpE;
+    REF.inputs[`${i},G`]=inpG;
+    REF.inputs[`${i},H`]=inpH;
+
+    // input event handler
+    function onInput(col,arr,inp) {
+      arr[i] = inp.value;
+      scheduleUpdate();
+    }
+    inpA.addEventListener('input',()=>onInput('A',D.callStrike,inpA));
+    inpB.addEventListener('input',()=>onInput('B',D.callOI,inpB));
+    inpD.addEventListener('input',()=>onInput('D',D.putStrike,inpD));
+    inpE.addEventListener('input',()=>onInput('E',D.putOI,inpE));
+    inpG.addEventListener('input',()=>onInput('G',D.gStrike,inpG));
+    inpH.addEventListener('input',()=>onInput('H',D.ivPct,inpH));
+
+    // paste handler
+    [
+      {inp:inpA,col:'A',arr:D.callStrike},
+      {inp:inpB,col:'B',arr:D.callOI},
+      {inp:inpD,col:'D',arr:D.putStrike},
+      {inp:inpE,col:'E',arr:D.putOI},
+      {inp:inpG,col:'G',arr:D.gStrike},
+      {inp:inpH,col:'H',arr:D.ivPct},
+    ].forEach(({inp,col,arr})=>{
+      inp.addEventListener('paste',e=>handlePaste(e,i,col));
+    });
+
+    tbody.appendChild(tr);
+  }
+
+  table.appendChild(tbody);
+}
+
+// ─── paste handler ────────────────────────────────────────────────────────────
+// Column order for multi-col paste within a section:
+const COL_ORDER = {
+  A:['A','B'], B:['B'], D:['D','E'], E:['E'],
+  G:['G','H'], H:['H'],
+};
+const COL_TO_ARR = {
+  A:D.callStrike, B:D.callOI, D:D.putStrike, E:D.putOI,
+  G:D.gStrike,    H:D.ivPct,
+};
+
+function handlePaste(e, startRow, startCol) {
+  e.preventDefault();
+  const text = (e.clipboardData||window.clipboardData).getData('text');
+  const lines = text.split(/\r?\n/).filter(l=>l.trim()!=='');
+  const colSeq = COL_ORDER[startCol] || [startCol];
+
+  lines.forEach((line,li)=>{
+    const rowIdx = startRow+li;
+    if (rowIdx>=MAX_ROWS) return;
+    const vals = line.split('\t');
+    colSeq.forEach((col,ci)=>{
+      const val = (vals[ci]||'').trim();
+      const arr = COL_TO_ARR[col];
+      if (!arr) return;
+      arr[rowIdx] = val;
+      const inp = REF.inputs[`${rowIdx},${col}`];
+      if (inp) {
+        inp.value = val;
+        // flash
+        inp.parentElement.classList.remove('pasted');
+        void inp.parentElement.offsetWidth;
+        inp.parentElement.classList.add('pasted');
+        setTimeout(()=>inp.parentElement.classList.remove('pasted'),400);
+      }
+    });
+  });
+  scheduleUpdate();
+}
+
+// ─── status badge ─────────────────────────────────────────────────────────────
+function setBadge(text,color='var(--amber)') {
+  const b=document.getElementById('status-badge');
+  b.textContent=text; b.style.color=color;
+}
+
+// ─── init ─────────────────────────────────────────────────────────────────────
+buildTable();
+recalc();
+updateDisplay();
+setBadge('Live','var(--green)');
+</script>
+</body>
+</html>
