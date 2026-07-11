@@ -22,11 +22,27 @@ async function fetchFresh(): Promise<Response> {
     }
     const html = await res.text();
     let rate: number | null = null;
-    // Google Finance no longer renders a `data-last-price` attribute — the live
-    // quote is embedded in an inline JS data blob as `,<rate>,"CNY / USD",86400,`.
-    // Try that first since it's the most reliable anchor to the actual price.
-    const blob = html.match(/,(\d+\.\d+),"CNY \/ USD",86400,/);
-    if (blob) rate = parseFloat(blob[1]);
+    // Google Finance no longer renders a `data-last-price` attribute. The live
+    // quote is embedded in an inline JS data blob as a *time series* of dated
+    // entries (`[[yyyy,m,d,h,min,null,null,[]],[<price>,...]]`) ending right
+    // before the `"CNY / USD",86400,` marker. The number sitting immediately
+    // before that marker is NOT reliably the latest tick — it can be a stale
+    // multi-day-old close that happens to be repeated nearby. The true latest
+    // price is the *last* (most recent timestamp) entry in that time series.
+    const anchorIdx = html.indexOf('"CNY / USD",86400');
+    if (anchorIdx !== -1) {
+      const windowStr = html.slice(Math.max(0, anchorIdx - 6000), anchorIdx);
+      const tsRegex = /\[\d{4},\d{1,2},\d{1,2},\d{1,2},\d{1,2},null,null,\[\]\],\[(\d+\.\d+),/g;
+      let m: RegExpExecArray | null;
+      let last: RegExpExecArray | null = null;
+      while ((m = tsRegex.exec(windowStr))) last = m;
+      if (last) rate = parseFloat(last[1]);
+    }
+    if (!rate) {
+      // Legacy fallback anchor (kept in case the time-series shape changes again).
+      const blob = html.match(/,(\d+\.\d+),"CNY \/ USD",86400,/);
+      if (blob) rate = parseFloat(blob[1]);
+    }
     if (!rate) {
       const attr = html.match(/data-last-price="([\d.]+)"/);
       if (attr) rate = parseFloat(attr[1]);
