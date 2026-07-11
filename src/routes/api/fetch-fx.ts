@@ -11,7 +11,7 @@ async function fetchFresh(): Promise<Response> {
   const ac = new AbortController();
   const t = setTimeout(() => ac.abort(), TIMEOUT);
   try {
-    const res = await fetch("https://www.google.com/finance/quote/CNY-USD?hl=en", {
+    const res = await fetch("https://www.google.com/finance/beta/quote/CNY-USD?hl=en", {
       signal: ac.signal,
       headers: { "User-Agent": UA, Accept: "text/html", "Cache-Control": "no-cache" },
     });
