@@ -155,7 +155,10 @@ function useShfe() {
 
   useEffect(() => {
     refresh();
-  }, []);
+    // Matches the server's 30s cache TTL for SHFE quotes.
+    const id = setInterval(refresh, 30_000);
+    return () => clearInterval(id);
+  }, [refresh]);
   return { quotes, loading, err, updateTime, refresh };
 }
 
@@ -193,7 +196,10 @@ function useSge() {
 
   useEffect(() => {
     refresh();
-  }, []);
+    // Matches the server's 30s cache TTL for SGE benchmark/quotes.
+    const id = setInterval(refresh, 30_000);
+    return () => clearInterval(id);
+  }, [refresh]);
   return { benchmark, quotes, loading, err, benchErr, quotesErr, refresh };
 }
 
