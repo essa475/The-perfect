@@ -166,9 +166,11 @@ function FontRolePicker({
   const [search, setSearch] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
 
-  const filtered = search
-    ? FONT_LIST.filter((f) => f.toLowerCase().includes(search.toLowerCase()))
-    : FONT_LIST;
+  const filtered = useMemo(() => {
+    if (!search) return FONT_LIST;
+    const q = search.toLowerCase();
+    return FONT_LIST.filter((f) => f.toLowerCase().includes(q));
+  }, [search]);
 
   // Batch-load all fonts the moment the picker opens
   function handleOpen() {

@@ -118,7 +118,11 @@ function useFx() {
 
   useEffect(() => {
     refresh();
-  }, []);
+    // Keep the rate fresh automatically — matches the server's 45s cache TTL,
+    // so the UI no longer requires a manual refresh to pick up new quotes.
+    const id = setInterval(refresh, 45_000);
+    return () => clearInterval(id);
+  }, [refresh]);
   return { rate, loading, err, refresh };
 }
 

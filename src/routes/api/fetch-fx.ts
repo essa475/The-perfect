@@ -22,8 +22,15 @@ async function fetchFresh(): Promise<Response> {
     }
     const html = await res.text();
     let rate: number | null = null;
-    const attr = html.match(/data-last-price="([\d.]+)"/);
-    if (attr) rate = parseFloat(attr[1]);
+    // Google Finance no longer renders a `data-last-price` attribute — the live
+    // quote is embedded in an inline JS data blob as `,<rate>,"CNY / USD",86400,`.
+    // Try that first since it's the most reliable anchor to the actual price.
+    const blob = html.match(/,(\d+\.\d+),"CNY \/ USD",86400,/);
+    if (blob) rate = parseFloat(blob[1]);
+    if (!rate) {
+      const attr = html.match(/data-last-price="([\d.]+)"/);
+      if (attr) rate = parseFloat(attr[1]);
+    }
     if (!rate) {
       const rx = html.match(/CNY\s*\/\s*USD[^0-9]{0,200}([0-9]+\.[0-9]+)/);
       if (rx) rate = parseFloat(rx[1]);
