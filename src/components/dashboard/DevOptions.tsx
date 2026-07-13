@@ -10,6 +10,7 @@ import {
   isAboutUnlocked,
   isChartUnlocked,
   isDevUnlocked,
+  loadGoogleFont,
   loadTheme,
   randomHex,
   saveTheme,
@@ -121,17 +122,6 @@ export const FONT_LIST = [
   "Saira Semi Condensed","PT Sans Narrow","PT Sans Caption","Asap Condensed",
   "Barlow Semi Condensed","Ubuntu Condensed","Encode Sans Condensed",
 ];
-
-// Load a single Google Font into the document on demand
-function loadGoogleFont(family: string) {
-  const id = `gf-${family.replace(/\s+/g, "-")}`;
-  if (document.getElementById(id)) return;
-  const link = document.createElement("link");
-  link.id = id;
-  link.rel = "stylesheet";
-  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family).replace(/%20/g, "+")}:wght@400;600;700&display=swap`;
-  document.head.appendChild(link);
-}
 
 // Batch-load all FONT_LIST fonts in a few combined requests for fast preview rendering
 let _allFontsLoaded = false;

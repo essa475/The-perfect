@@ -294,6 +294,19 @@ export function saveTheme(t: ThemeSettings) {
   localStorage.setItem(THEME_KEY, JSON.stringify(t));
 }
 
+// Load a single Google Font stylesheet into the document (idempotent).
+// Shared by DevOptions (font picker) and the app shell (restoring saved fonts on load).
+export function loadGoogleFont(family: string) {
+  if (typeof document === "undefined") return;
+  const id = `gf-${family.replace(/\s+/g, "-")}`;
+  if (document.getElementById(id)) return;
+  const link = document.createElement("link");
+  link.id = id;
+  link.rel = "stylesheet";
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family).replace(/%20/g, "+")}:wght@400;600;700&display=swap`;
+  document.head.appendChild(link);
+}
+
 export function isDevUnlocked(): boolean {
   try { return localStorage.getItem(DEV_UNLOCK_KEY) === "1"; } catch { return false; }
 }

@@ -10,7 +10,7 @@ import {
 } from "@/components/dashboard/primitives";
 import RightDrawer from "@/components/dashboard/RightDrawer";
 import TradingViewTab from "@/components/dashboard/TradingViewTab";
-import { animClassFor, applyTheme, isChartUnlocked, loadTheme, type AnimationStyle } from "@/lib/theme";
+import { animClassFor, applyTheme, isChartUnlocked, loadGoogleFont, loadTheme, type AnimationStyle } from "@/lib/theme";
 
 const G = 31.1035;
 const AUTH_KEY = "xauusd_auth";
@@ -448,6 +448,12 @@ function App() {
     const t = loadTheme();
     applyTheme(t);
     setAnimStyle(t.animationStyle);
+    // Restore any saved custom fonts — applyTheme only sets the CSS variable,
+    // it doesn't inject the Google Fonts stylesheet. Without this, a saved
+    // custom font falls back to the default until the Dev Options panel
+    // (which used to be the only place fonts were loaded) is opened.
+    const fontRoles = [t.navFont, t.titleFont, t.headingFont, t.subheadingFont, t.panelFont];
+    fontRoles.forEach((f) => { if (f && f !== "Inter") loadGoogleFont(f); });
     function onThemeChange(e: Event) {
       const detail = (e as CustomEvent<{ animationStyle: AnimationStyle }>).detail;
       if (detail) setAnimStyle(detail.animationStyle);
